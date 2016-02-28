@@ -30,6 +30,7 @@
 # Run:  onsR2::ds_read$new("CHAY")$get_data()
 # Run:  onsR2::ts_read$new("chay")$get_data()
 
+# Run:  onsR2::download("chay")
 ###update -dataset -  headers (database table : ons_ds_headers )
 # Run:  onsR2::ons_headers$new()$add_headers()
 

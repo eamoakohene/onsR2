@@ -7,7 +7,7 @@ ons_utils <- R6::R6Class("ons_utils",
      public = list(
 
         db_path = ''    #"R:/packages/onsR2/"
-       ,db_name = 'onsR2.sqlite'
+       ,db_name = 'inst/extdata/onsR2.sqlite'
        ,db_dir =  ''  #"data/"
        ,db_full_path = NULL
        ,title = NULL # ons title for timeseries
