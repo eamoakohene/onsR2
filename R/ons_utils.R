@@ -1,12 +1,12 @@
-devtools::use_package("R6")
-devtools::use_package("sqldf")
-devtools::use_package("rvest")
+# devtools::use_package("R6")
+# devtools::use_package("sqldf")
+# devtools::use_package("rvest")
 
 ons_utils <- R6::R6Class("ons_utils",
 
      public = list(
 
-        db_path = ''    #"R:/packages/onsR2/"
+        db_path = "R:/packages/onsR2/" #currently just for internal stuff
        ,db_name = 'inst/extdata/onsR2.sqlite'
        ,db_dir =  ''  #"data/"
        ,db_full_path = NULL

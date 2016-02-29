@@ -10,7 +10,7 @@ ts_read <- R6::R6Class(
 
     #'base url
     ,BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
-    ,ROWS_TO_SKIP = 9 #rows to be skipped in the csv file
+    ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
 
     #'====initialize====
