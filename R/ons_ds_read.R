@@ -1,39 +1,22 @@
 ds_read <- R6::R6Class(
   "ds_read",
-  inherit = ons_utils,
+  inherit = ons_reader,
 
   public = list(
 
-    code = NULL,
+
     HEADER_LIMIT = 8,
 
-    initialize = function(code){
-      self$set_code(code)
-    }
 
-    ,set_code = function(value){
-      if (!missing(value) && !is.null(value)) {
-        self$code <- toupper(trimws(value))
-      }else{
-        stop("Series code is required")
-      }
-      invisible(self)
-    }
 
-    ,get_code = function(){
-      return(self$code)
-    }
-
-    ,get_info = function(){
+    get_info = function(){
        my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s'",self$code)
        my_data <- private$run_sql(my_sql)
        if(nrow(my_data)>0) {self$title <- my_data$title[1]}
        return(my_data)
     }
 
-    ,get_title = function(){
-      return(self$title)
-    }
+
 
     ,read_data = function(){
       my_info <- self$get_info()

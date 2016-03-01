@@ -1,6 +1,7 @@
 
 ons_headers <- R6::R6Class(
   "ons_headers",
+
   inherit = ons_utils,
 
   public = list(
