@@ -6,7 +6,10 @@ ons_reader <- R6::R6Class(
     public = list(
 
        code = NULL,
-       title = NULL # ons title for timeseries
+       title = NULL, # ons title for timeseries
+       DO_NOTHING = 0,
+       proceed = 1
+
 
       ,DAY_OF_MTH = 1   #dd of date yyyy-mm-dd when composing date for monthly or quarterly time series data
       ,MTH_OF_YR = 1    #mm of date yyyy-mm-dd when composing date for yearly time series data.
@@ -28,7 +31,9 @@ ons_reader <- R6::R6Class(
         if (!missing(value) && !is.null(value)) {
           self$code <- toupper(trimws(value))
         }else{
-          stop("Series code is required")
+          cat("Series code is required \n")
+          self$proceed <- self$DO_NOTHING
+          return('')
         }
         invisible(self)
       }
@@ -42,18 +47,24 @@ ons_reader <- R6::R6Class(
       }
 
       ,download_data = function(){
+        if(self$proceed == self$DO_NOTHING){return(NULL)}
         my_data <- self$read_data()
 
-        nrows <- nrow( my_data )
+        if(is.null(my_data)){ return(NULL) }
+
+
+        names(my_data) <- c('date','value')
+
+        my_data <- dplyr::filter(my_data,!is.na(value))
 
         # first column rows with 4-character length are yearly data
-        data_yr <- my_data[nchar(my_data$V1)==self$YEARLY,]
+        data_yr <- my_data[nchar(my_data$date)==self$YEARLY,]
 
         # first column rows with 7-character length are yearly data
-        data_qtr <- my_data[ nchar(my_data$V1) == self$QUARTERLY,]
+        data_qtr <- my_data[ nchar(my_data$date) == self$QUARTERLY,]
 
         # first column rows with 8-character length are yearly data
-        data_mth <- my_data[ nchar(my_data$V1) == self$MONTHLY,]
+        data_mth <- my_data[ nchar(my_data$date) == self$MONTHLY,]
 
 
         return(
@@ -68,6 +79,8 @@ ons_reader <- R6::R6Class(
       }
 
       ,get_data = function(format='ts'){
+
+        if(self$proceed == self$DO_NOTHING){return(NULL)}
 
         mydata <- self$download_data()
         if ( is.null( mydata)) {

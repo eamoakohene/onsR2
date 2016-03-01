@@ -17,9 +17,8 @@
   # Run:  abc$get_add_sql(col_id = 1)
 
 ### testing readers
-#testthat::expect_equal()
-# Run: onsR2::ds_read$new("CHAY")$read_data()
-# Run: onsR2::ts_read$new("chay")$read_data()
+# Run: onsR2::ds_read$new("CHAY")$read_data() # abc <- ds_read$new('CHAY')
+# Run: onsR2::ts_read$new("chay")$read_data() # abc <- ts_read$new('CHAY')
 #
 # Run:  onsR2::ds_read$new("CHAY")$get_info()
 # Run:  onsR2::ts_read$new("chay")$get_info()
