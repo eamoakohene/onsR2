@@ -6,11 +6,8 @@ ons_utils <- R6::R6Class("ons_utils",
 
      public = list(
 
-        db_path = "R:/packages/onsR2/" #currently just for internal stuff
-       ,db_name = 'onsR2.sqlite'
-       ,db_dir =  'inst/extdata/'
-       ,db_full_path = NULL
-       ,title = NULL # ons title for timeseries
+
+       title = NULL # ons title for timeseries
 
        ,DAY_OF_MTH = 1   #dd of date yyyy-mm-dd when composing date for monthly or quarterly time series data
        ,MTH_OF_YR = 1    #mm of date yyyy-mm-dd when composing date for yearly time series data.
@@ -20,27 +17,7 @@ ons_utils <- R6::R6Class("ons_utils",
        ,QUARTERLY = 7 # '2004 Q1'
        ,MONTHLY = 8   # '2004 JAN'
 
-       ,initialize = function(db_path){
-         self$set_db_path(db_path)
-       }
-
-       ,get_db_path = function(){
-         if(is.null( self$db_full_path)){
-           self$set_db_path()
-         }
-         return(self$db_full_path )
-       }
-
-       ,set_db_path = function(value){
-
-         if (!missing(value) && !is.null(value)) {
-           self$db_full_path <- value
-         }else{
-           self$db_full_path <- sprintf("%s%s%s",self$db_path, self$db_dir, self$db_name)
-         }
-
-         invisible(self)
-       }
+       ,initialize = function(){}
 
 
        ,download_data = function(){
@@ -207,6 +184,7 @@ ons_utils <- R6::R6Class("ons_utils",
        }
      }
    )#public
+
      ,private = list(
        get_db_con = function(){
          return(

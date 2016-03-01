@@ -7,6 +7,4 @@ Maintainer: <eamoakohene@gmail.com>
 Description: Download Official data from UK Office for National Statistics (ONS)
 License: GPL2
 LazyData: TRUE
-Imports: R6,
-    sqldf,
-    rvest
+Imports: R6,sqldf,rvest
