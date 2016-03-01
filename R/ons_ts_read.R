@@ -4,11 +4,11 @@ ts_read <- R6::R6Class(
 
   public = list(
 
-     ons_url = NULL   #field for url to the csv file to be downloaded
-    ,ons_df = NULL    #data.frame containing the meta data of the code to be downloaded
 
-    #'base url
-    ,BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
+
+
+
+     BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
     ,initialize = function(code){
