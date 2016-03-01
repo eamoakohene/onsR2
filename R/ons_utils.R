@@ -7,8 +7,8 @@ ons_utils <- R6::R6Class("ons_utils",
      public = list(
 
         db_path = "R:/packages/onsR2/" #currently just for internal stuff
-       ,db_name = 'inst/extdata/onsR2.sqlite'
-       ,db_dir =  ''  #"data/"
+       ,db_name = 'onsR2.sqlite'
+       ,db_dir =  'inst/extdata/'
        ,db_full_path = NULL
        ,title = NULL # ons title for timeseries
 
@@ -210,12 +210,12 @@ ons_utils <- R6::R6Class("ons_utils",
      ,private = list(
        get_db_con = function(){
          return(
-           DBI::dbConnect(RSQLite::SQLite(), dbname=self$get_db_path())
+           DBI::dbConnect(RSQLite::SQLite(), dbname=system.file("extdata/onsR2.sqlite",package="onsR2"))    #dbname=self$get_db_path()
          )
        }
 
        ,run_sql = function(qry) {
-         return(sqldf::sqldf(qry, dbname=self$get_db_path() ))
+         return(sqldf::sqldf(qry, dbname=system.file("extdata/onsR2.sqlite",package="onsR2") )) #dbname=self$get_db_path()
        }
      )
 
