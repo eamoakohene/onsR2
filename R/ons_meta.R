@@ -435,10 +435,11 @@ add_missing_codes <- function( indx=1){
     my_caption <- onsR2::search(my_code,is_code = T,fx='ds')$description
     my_uri <- ts_search_info(my_code,uri_only=T)
     my_sql <- sprintf("insert into ons_timeseries (code,caption,uri) values ('%s','%s','%s'); ", my_code, my_caption, my_uri)
+
     RSQLite::dbSendQuery(
       DBI::dbConnect(
         RSQLite::SQLite(),
-        dbname = system.file("extdata/onsR2.sqlite",package="onsR2")
+        dbname = 'R:/packages/onsR2/inst/extdata/onsR2.sqlite'
       ),
       my_sql
     )
