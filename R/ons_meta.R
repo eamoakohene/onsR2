@@ -208,6 +208,7 @@ ons_meta <- R6::R6Class("ons_meta",
       )
 
     }
+
     ,get_ds_meta = function(){
       return(
         sqldf::sqldf("select * from ons_datasets order by caption",dbname=self$get_db_path())
@@ -316,3 +317,132 @@ ts_scrap = function(grp_range=1:23, pg_range=1:2000){
   }
 
 }
+
+ts_search_info <- function(code='mgsx', cs = '.btn--primary', uri_only = FALSE ){
+  MAX_LEN <- 1000
+  my_code <- code
+  my_css <- cs
+
+  my_url <- paste0('http://www.ons.gov.uk/search?q=',tolower(my_code))
+  my_page <- try(xml2::read_html(my_url),silent = T)
+
+  if(class(my_page)[1]=='try-error'){
+    cat('Error occurred why reading page. Exiting now ...')
+    return(NULL)
+  }
+
+
+  my_element <- rvest::html_nodes(my_page, my_css)
+  if(is.null(my_element)){ return(NULL) }
+
+  my_links <- rvest::html_attr(my_element, "href")
+  if(is.null(my_links)){ return(NULL) }
+
+  my_substr_start <- nchar('/generator?format=') + 1
+  my_substr_end <- my_substr_start +nchar('csv') - 1
+  my_link_csv <- my_links[ substr( my_links,my_substr_start, my_substr_end ) == 'csv' ]
+  if(!uri_only){
+    return( my_link_csv[1] )
+  }else{
+
+    my_remove <- nchar('/generator?format=csv&uri=')+1
+    return(
+      substr( my_link_csv[1], my_remove, MAX_LEN )
+    )
+
+  }
+}
+
+get_bmm_missing_codes <- function(indx=1,full=FALSE){
+  my_codes <- c(
+    'K22A',
+    'MGSX',
+    'MC9R',
+    'MC9A',
+    'K386',
+    'K387',
+    'K23K',
+    'K23O',
+    'JQF8',
+    'JQ88',
+    'JQ89',
+    'JQ8J',
+    'JQ9T',
+    'JQF9',
+    'JQJ7',
+    'JQO3',
+    'JQ9U',
+    'JQO4',
+    'K55I',
+    'DSI3',
+    'ABMI',
+    'BAHY',
+    'ENXO',
+    'BQNJ',
+    'L87S',
+    'L87U',
+    'L87Q',
+    'ELBH',
+    'BPAN',
+    'BQBD',
+    'BQAI',
+    'CHNF',
+    'ENYT',
+    'CHOA',
+    'CHNH',
+    'CHOE',
+    'CHNE',
+    'CHNV',
+    'CHOD',
+    'EREL',
+    'ERDS',
+    'EREE',
+    'EOBD',
+    'EOBX',
+    'EOCR',
+    'EPNX',
+    'EREK',
+    'J9C6',
+    'K38E',
+    'JQZ3',
+    'JQZ2',
+    'JQY9',
+    'JQX5',
+    'JQX6',
+    'L2MW',
+    'YBEZ',
+    'KLH7'
+
+  )
+
+  if(full){ return(my_codes)}
+
+  if(indx %in% 1:length(my_codes)){
+     return(my_codes[indx])
+  }else{
+    return(NULL)
+  }
+
+}
+
+add_missing_codes <- function( indx=1){
+
+  NO_MISSING_CODES <- length(get_bmm_missing_codes(indx,TRUE))
+
+  for(i in 1:NO_MISSING_CODES){
+    #i=1
+    my_code <- get_bmm_missing_codes(i)
+    my_caption <- onsR2::search(my_code,is_code = T,fx='ds')$description
+    my_uri <- ts_search_info(my_code,uri_only=T)
+    my_sql <- sprintf("insert into ons_timeseries (code,caption,uri) values ('%s','%s','%s'); ", my_code, my_caption, my_uri)
+    RSQLite::dbSendQuery(
+      DBI::dbConnect(
+        RSQLite::SQLite(),
+        dbname = system.file("extdata/onsR2.sqlite",package="onsR2")
+      ),
+      my_sql
+    )
+    cat(toupper(my_code),' added successfully \n')
+  }
+}
+

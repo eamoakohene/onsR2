@@ -1,8 +1,8 @@
-\name{ons_meta}
-\alias{ons_meta}
+\name{ons_ts_meta}
+\alias{ons_ts_meta}
 \title{R6 class for scraping ONS meta data}
 \usage{
-ons_meta()
+ons_ts_meta()
 }
 \description{
 
@@ -21,5 +21,5 @@ ons_meta()
  instead of \code{url} which points to csv file containing the actual data.
 }
 \examples{
-ons_meta()
+ons_ts_meta()
 }

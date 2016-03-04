@@ -31,7 +31,7 @@
 
 # Run:  onsR2::download("chay")
 ###update -dataset -  headers (database table : ons_ds_headers )
-# Run:  onsR2::ons_headers$new()$add_headers()
+# Run:  onsR2::ons_ds_meta$new()$add_headers()
 
 ###Updating meta  - scrapping###
 ### scraps using http://www.ons.gov.uk/search?filter=time_series

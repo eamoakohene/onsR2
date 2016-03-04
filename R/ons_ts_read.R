@@ -4,22 +4,22 @@ ts_read <- R6::R6Class(
 
   public = list(
 
-
-
-
-
      BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
-    ,initialize = function(code){
+    ,initialize = function(code=NULL,code_req=TRUE){
+      fxn_show_boat(msg = match.call()[[1]])
+      super$initialize(code,code_req)
 
-      super$initialize(code)
-      self$set_title()
+      if(code_req){
+        self$set_title()
+      }
 
     }
 
 
     ,set_title = function(){
+      fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return('title could not be set')} #code not supplied
       my_sql <-  sprintf("select caption from ons_timeseries where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
@@ -41,13 +41,14 @@ ts_read <- R6::R6Class(
     }
 
     ,get_info = function(){
+      fxn_show_boat(msg = match.call()[[1]])
       my_sql <-  sprintf("select * from ons_timeseries where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
       return(my_data)
     }
 
     ,read_data = function(){
-
+      fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return(NULL)}
 
       temp <- self$get_info()
@@ -79,19 +80,21 @@ ts_read <- R6::R6Class(
 
     ,search_info = function(qry=NULL,is_code = FALSE) {
 
-      if(self$proceed == self$DO_NOTHING){return(NULL)}
+      fxn_show_boat(msg = match.call()[[1]])
 
       my_is_code <- is_code
       my_qry <- qry
 
       if (is.null(qry)) {
-        my_qry <- self$code
-        my_is_code <- TRUE
+        cat('Query string required \n')
+        return(NULL)
       }
+
+      fxn_show_boat('GONE PAST IS.NULL(QRY)')
 
       my_sql <- NULL
       if (!my_is_code) {
-        sql <- paste0(
+        my_sql <- paste0(
           "select code, caption as description, url ",
           "from ons_timeseries where caption like '%",my_qry,"%';"
         )
@@ -101,6 +104,7 @@ ts_read <- R6::R6Class(
           "from ons_timeseries where code like '%",my_qry,"%';"
         )
       }
+      fxn_show_boat(my_sql)
 
       return(private$run_sql(my_sql))
     }#search

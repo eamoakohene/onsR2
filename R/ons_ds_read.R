@@ -7,9 +7,11 @@ ds_read <- R6::R6Class(
 
     HEADER_LIMIT = 8,
 
-    initialize = function(code){
-      super$initialize(code)
-      self$set_title()
+    initialize = function( code = NULL, code_req=TRUE ){
+      super$initialize(code,code_req)
+      if(code_req){
+          self$set_title()
+      }
     }
 
     ,get_info = function(){
@@ -57,18 +59,18 @@ ds_read <- R6::R6Class(
     }
 
     ,search_info = function(qry = NULL,is_code = FALSE) {
+
       my_is_code <- is_code
       my_qry <- qry
 
       if (is.null(qry)) {
-        my_qry <- self$code
-        my_is_code <- TRUE
+        cat('Query string required \n')
       }
 
       my_sql <- NULL
 
       if (!my_is_code) {
-        my_sql <- paste0("select code, title as description, src , src_id  from ons_ds_headers where title like '%",my_qry,"%';")
+        my_sql <- paste0("select code, title as description, src as uri , src_id  from ons_ds_headers where title like '%",my_qry,"%';")
 
       }else{
         my_sql <- paste0("select code, title as description, src as uri, src_id from ons_ds_headers where code like '%",my_qry,"%';")

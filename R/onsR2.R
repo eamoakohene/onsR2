@@ -16,16 +16,23 @@ download <- function(code,format = 'ts',fx = 'ts') {
 
 
 search <- function(qry = NULL,is_code = FALSE,fx = 'ts') {
-
+  fxn_show_boat(msg = match.call()[[1]])
   if(fx == 'ts'){
+     my_temp <- onsR2::ts_read$new( code_req = FALSE)
+     fxn_show_boat('SEARCH |> MY_TEMP OK')
       return(
-        onsR2::ts_read$new(code = code)$search_info(qry = qry,is_code=is_code)
+        my_temp$search_info(qry = qry,is_code=is_code)
       )
   }else{
      return(
-        onsR2::ds_read$new(code = code)$search_info(qry = qry,is_code=is_code)
+        onsR2::ds_read$new(code_req = FALSE)$search_info(qry = qry,is_code=is_code)
      )
   }
 
 }
 
+fxn_show_boat <- function(msg = match.call()[[1]]){
+
+  my_msg <- sprintf("Hi I am in %s wheeeeee!",toupper(msg))
+  #cat(my_msg,'\n')
+}
