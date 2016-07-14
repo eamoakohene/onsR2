@@ -3,7 +3,6 @@ ts_read <- R6::R6Class(
   inherit = ons_reader,
 
   public = list(
-
      BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
@@ -21,12 +20,12 @@ ts_read <- R6::R6Class(
     ,set_title = function(){
       fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return('title could not be set')} #code not supplied
-      my_sql <-  sprintf("select caption from ons_timeseries where upper(code)='%s' limit 1",toupper(self$code))
+      my_sql <-  sprintf("select title from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
 
       if(nrow(my_data)>0) {
 
-        self$title <- my_data$caption[1]
+        self$title <- my_data$title[1]
 
       }else{
 
@@ -42,38 +41,83 @@ ts_read <- R6::R6Class(
 
     ,get_info = function(){
       fxn_show_boat(msg = match.call()[[1]])
-      my_sql <-  sprintf("select * from ons_timeseries where upper(code)='%s' limit 1",toupper(self$code))
+      my_sql <-  sprintf("select * from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
       return(my_data)
     }
 
-    ,read_data = function(){
-      fxn_show_boat(msg = match.call()[[1]])
-      if(self$proceed == self$DO_NOTHING){return(NULL)}
-
+    ,get_url = function(is_new = FALSE){
       temp <- self$get_info()
       if ( is.null(temp) ) {
         cat("Info returned nothing. Exiting function with NULL results.....\n")
         return(NULL)
       }
-
-      url <- sprintf("%s%s",self$BASEURL,temp$uri)
-      #cat(url,"\n")
-
-      my_data <- try(
-        read.csv(
-          url,
-          header=F,
-          skip= self$ROWS_TO_SKIP,
-          stringsAsFactors=F
-        )
-      )
-      if (class(data) == "try-error") {  return("Error encountered during download!") }
-
-      if(nrow(my_data) == 0){
-        cat("No data found for ",self$code,'\n')
-        return(NULL)
+      if(!is_new){
+        return( tolower(sprintf("%s%s",self$BASEURL,temp$uri)) )
+      }else{
+        return( tolower(sprintf("%s%s/%s",self$BASEURL,temp$uri, temp$grp)) )
       }
+
+    }
+    ,read_url = function(my_url) {
+      out <- tryCatch(
+        {
+          read.csv( my_url, header=F,  skip= self$ROWS_TO_SKIP, stringsAsFactors=F)
+        },
+        error = function(cond) {
+          message(paste("URL does not seem to exist:", my_url))
+          #message(cond)
+          return(NULL)
+        },
+        warning = function(cond) {
+          #message(paste("URL caused a warning:", my_url))
+          #message(cond)
+          return(NULL)
+        },
+        finally = {
+          #message(paste("Processed URL:", my_url))
+        }
+      )
+      return(out)
+    }
+    ,read_data = function(){
+      fxn_show_boat(msg = match.call()[[1]])
+      if(self$proceed == self$DO_NOTHING){return(NULL)}
+
+#       temp <- self$get_info()
+#       if ( is.null(temp) ) {
+#         cat("Info returned nothing. Exiting function with NULL results.....\n")
+#         return(NULL)
+#       }
+
+      url <- self$get_url()
+      #cat(url,"\n")
+      err <- simpleError("Error encountered during download!")
+
+
+      my_data <- self$read_url(url)
+
+      if (is.null(my_data)) {
+
+        url2 <- self$get_url(TRUE)
+
+        my_data2 <- self$read_url(url2)
+        if (is.null(my_data2)) {
+                return("Error encountered during download!")
+        }
+
+        # if(nrow(my_data2) == 0){
+        #   cat("No data found for ",self$code,'\n')
+        #   return(NULL)
+        # }
+
+        return(my_data2)
+      }
+
+      # if(nrow(my_data) == 0){
+      #   cat("No data found for ",self$code,'\n')
+      #   return(NULL)
+      # }
       return(my_data)
     }
 
@@ -95,13 +139,13 @@ ts_read <- R6::R6Class(
       my_sql <- NULL
       if (!my_is_code) {
         my_sql <- paste0(
-          "select code, caption as description, url ",
-          "from ons_timeseries where caption like '%",my_qry,"%';"
+          "select code, title as description, url ",
+          "from ons_ds_headers where title like '%",my_qry,"%';"
         )
       }else{
         my_sql <- paste0(
-          "select code,caption as description, url ",
-          "from ons_timeseries where code like '%",my_qry,"%';"
+          "select code, title as description, url ",
+          "from ons_ds_headers where code like '%",my_qry,"%';"
         )
       }
       fxn_show_boat(my_sql)

@@ -11,16 +11,36 @@ ons_utils <- R6::R6Class("ons_utils",
    )#public
 
    ,private = list(
+       is_local = FALSE,
 
        get_db_con = function(){
-         return(
-           DBI::dbConnect(RSQLite::SQLite(), dbname=system.file("extdata/onsR2.sqlite",package="onsR2"))
-         )
+         if(private$is_local){
+           return(
+             DBI::dbConnect(RSQLite::SQLite(), dbname='R:/packages/onsR2/inst/extdata/onsR2.sqlite')
+           )
+         }else{
+           return(
+             DBI::dbConnect(RSQLite::SQLite(), dbname=system.file("extdata/onsR2.sqlite",package="onsR2"))
+           )
+         }
        }
 
        ,run_sql = function(qry) {
-         return(sqldf::sqldf(qry, dbname=system.file("extdata/onsR2.sqlite",package="onsR2") ))
+
+         if(private$is_local){
+           return(sqldf::sqldf(qry, dbname='R:/packages/onsR2/inst/extdata/onsR2.sqlite' ))
+         }else{
+           return(sqldf::sqldf(qry, dbname=system.file("extdata/onsR2.sqlite",package="onsR2") ))
+         }
+
        }
    )
 
 )
+
+fxn_show_boat <- function(msg = match.call()[[1]]){
+
+  #my_msg <- sprintf("Hi I am in %s wheeeeeez!",toupper(msg))
+  #cat(my_msg,'\n')
+}
+

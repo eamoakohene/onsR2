@@ -34,8 +34,3 @@ search <- function(qry = NULL,is_code = FALSE,fx = 'ts') {
 
 }
 
-fxn_show_boat <- function(msg = match.call()[[1]]){
-
-  #my_msg <- sprintf("Hi I am in %s wheeeeeez!",toupper(msg))
-  #cat(my_msg,'\n')
-}
