@@ -41,9 +41,22 @@ ts_read <- R6::R6Class(
 
     ,get_info = function(){
       fxn_show_boat(msg = match.call()[[1]])
-      my_sql <-  sprintf("select * from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
-      my_data <- private$run_sql(my_sql)
-      return(my_data)
+      my_data <- private$run_sql(sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code)))
+
+      if(nrow(my_data) == 1 ){
+        return(my_data)
+      }
+
+      has_default <- dplyr::filter(my_data,code_default ==1)
+      if(nrow(has_default) == 1){
+        return( has_default)
+      }
+
+
+      # my_sql <-  sprintf("select * from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
+      # my_data <- private$run_sql(my_sql)
+
+      return(my_data[1,])
     }
 
     ,get_url = function(is_new = FALSE){
