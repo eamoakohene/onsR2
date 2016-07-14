@@ -113,7 +113,8 @@ ons_reader <- R6::R6Class(
         if(self$proceed == self$DO_NOTHING){return(NULL)}
 
         mydata <- self$download_data()
-        if ( is.null( mydata)) {
+        if ( is.null( mydata) || !is.data.frame(mydata)) {
+          cat(self$code,':Error encountered during download!')
           return(NULL)
         }
 
