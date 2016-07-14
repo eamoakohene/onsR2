@@ -75,7 +75,7 @@ ts_read <- R6::R6Class(
           return(NULL)
         },
         finally = {
-          #message(paste("Processed URL:", my_url))
+          message(paste("Processed code:", self$code))
         }
       )
       return(out)
