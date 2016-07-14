@@ -47,9 +47,9 @@ ts_read <- R6::R6Class(
         return(my_data)
       }
 
-      has_default <- dplyr::filter(my_data,code_default ==1)
-      if(nrow(has_default) == 1){
-        return( has_default)
+      has_default <- dplyr::filter(my_data,code_default == 1)
+      if(nrow(has_default) > 0){
+        return( has_default[1,])
       }
 
 
