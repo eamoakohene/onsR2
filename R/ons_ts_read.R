@@ -105,7 +105,7 @@ ts_read <- R6::R6Class(
 
       url <- self$get_url()
       #cat(url,"\n")
-      err <- simpleError("Error encountered during download!")
+      #err <- simpleError("Error encountered during download!")
 
 
       my_data <- self$read_url(url)
