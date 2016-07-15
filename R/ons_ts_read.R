@@ -93,6 +93,16 @@ ts_read <- R6::R6Class(
       )
       return(out)
     }
+
+    ,read_url_simple = function(my_url) {
+      cat('Initiating ',self$code,"...\n")
+      out <- try(
+          read.csv( my_url, header=F,  skip= self$ROWS_TO_SKIP, stringsAsFactors=F)
+        ,silent = T)
+      if(class(out) == "try-error"){return(NULL)}
+      return(out)
+    }
+
     ,read_data = function(){
       fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return(NULL)}
@@ -103,18 +113,18 @@ ts_read <- R6::R6Class(
 #         return(NULL)
 #       }
 
-      url <- self$get_url()
+      url <- self$get_url(T)
       #cat(url,"\n")
       #err <- simpleError("Error encountered during download!")
 
 
-      my_data <- self$read_url(url)
+      my_data <- self$read_url_simple(url)
 
       if (is.null(my_data)) {
 
-        url2 <- self$get_url(TRUE)
+        url2 <- self$get_url()
 
-        my_data2 <- self$read_url(url2)
+        my_data2 <- self$read_url_simple(url2)
         if (is.null(my_data2)) {
                 return("Error encountered during download!")
         }

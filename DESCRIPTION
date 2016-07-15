@@ -1,7 +1,7 @@
 Package: onsR2
 Type: Package
 Title: Download Official data from UK Office for National Statistics (ONS)
-Version: 0.1.2
+Version: 0.1.3
 Author: Emmanuel Amoakohene
 Maintainer: <eamoakohene@gmail.com>
 Description: Download Official data from UK Office for National Statistics (ONS)
