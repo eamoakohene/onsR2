@@ -7,7 +7,7 @@ ts_read <- R6::R6Class(
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
     ,initialize = function(code=NULL,code_req=TRUE){
-      fxn_show_boat(msg = match.call()[[1]])
+      #fxn_show_boat(msg = match.call()[[1]])
       super$initialize(code,code_req)
 
       if(code_req){
@@ -18,7 +18,7 @@ ts_read <- R6::R6Class(
 
 
     ,set_title = function(){
-      fxn_show_boat(msg = match.call()[[1]])
+      #fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return('title could not be set')} #code not supplied
       my_sql <-  sprintf("select title from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
@@ -40,7 +40,7 @@ ts_read <- R6::R6Class(
     }
 
     ,get_info = function(){
-      fxn_show_boat(msg = match.call()[[1]])
+      #fxn_show_boat(msg = match.call()[[1]])
       my_data <- private$run_sql(sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code)))
 
       if(nrow(my_data) == 1 ){
@@ -104,7 +104,7 @@ ts_read <- R6::R6Class(
     }
 
     ,read_data = function(){
-      fxn_show_boat(msg = match.call()[[1]])
+      #fxn_show_boat(msg = match.call()[[1]])
       if(self$proceed == self$DO_NOTHING){return(NULL)}
 
 #       temp <- self$get_info()
@@ -147,7 +147,7 @@ ts_read <- R6::R6Class(
 
     ,search_info = function(qry=NULL,is_code = FALSE) {
 
-      fxn_show_boat(msg = match.call()[[1]])
+      #fxn_show_boat(msg = match.call()[[1]])
 
       my_is_code <- is_code
       my_qry <- qry
@@ -157,7 +157,7 @@ ts_read <- R6::R6Class(
         return(NULL)
       }
 
-      fxn_show_boat('GONE PAST IS.NULL(QRY)')
+      #fxn_show_boat('GONE PAST IS.NULL(QRY)')
 
       my_sql <- NULL
       if (!my_is_code) {
@@ -171,7 +171,7 @@ ts_read <- R6::R6Class(
           "from ons_ds_headers where code like '%",my_qry,"%';"
         )
       }
-      fxn_show_boat(my_sql)
+      #fxn_show_boat(my_sql)
 
       return(private$run_sql(my_sql))
     }#search
@@ -181,5 +181,3 @@ ts_read <- R6::R6Class(
 
 
 ) #ons_ts_read
-
-

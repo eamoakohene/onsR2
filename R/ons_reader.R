@@ -26,7 +26,7 @@ ons_reader <- R6::R6Class(
       #'
       ,initialize = function(code,code_req = TRUE){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         self$set_code(code_req)
         self$set_code(code)
 
@@ -44,7 +44,7 @@ ons_reader <- R6::R6Class(
 
       ,set_code_req = function(value){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         if (!is.null(value)) {
           self$code_req <- value
         }
@@ -54,7 +54,7 @@ ons_reader <- R6::R6Class(
 
       ,set_code = function(value){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         if (!missing(value) && !is.null(value)) {
           self$code <- toupper(trimws(value))
 
@@ -68,14 +68,14 @@ ons_reader <- R6::R6Class(
 
       ,get_title = function(){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         return(self$title)
 
       }
 
       ,download_data = function(){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         if(self$proceed == self$DO_NOTHING){return(NULL)}
         my_data <- self$read_data()
 
@@ -112,7 +112,7 @@ ons_reader <- R6::R6Class(
 
       ,get_data = function(format='ts'){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
         if(self$proceed == self$DO_NOTHING){return(NULL)}
 
         mydata <- self$download_data()
@@ -210,7 +210,7 @@ ons_reader <- R6::R6Class(
 
       ,ts_dates = function(myts){
 
-        fxn_show_boat(msg = match.call()[[1]])
+        #fxn_show_boat(msg = match.call()[[1]])
 
         if ( frequency(myts) == 12 ) {
           return(seq(
@@ -254,5 +254,3 @@ ons_reader <- R6::R6Class(
 
     )#public
 )#R6
-
-
