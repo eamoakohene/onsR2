@@ -7,8 +7,8 @@ ds_read <- R6::R6Class(
 
     HEADER_LIMIT = 8,
 
-    initialize = function( code = NULL, code_req=TRUE ){
-      super$initialize(code,code_req)
+    initialize = function( code = NULL, code_req=TRUE , grp = NULL){
+      super$initialize(code,code_req, grp)
       if(code_req){
           self$set_title()
       }
@@ -16,6 +16,13 @@ ds_read <- R6::R6Class(
 
     ,get_info = function(){
        my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code))
+
+       if( !is.null( self$code_grp ) ){
+
+         my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s' and upper(grp) =='%s' ",toupper(self$code), toupper(self$code_grp) )
+
+       }
+
        my_data <- private$run_sql(my_sql)
        return(my_data)
     }

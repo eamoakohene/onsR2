@@ -4,14 +4,30 @@
 #' fx - the source of data, ts = timeseries data, ds= dataset which is normally large
 #'  spreadsheet containing several other series. It not as effecient as the ts source.
 
-download <- function(code,format = 'ts',fx = 'ts') {
+download <- function(code,format = 'ts',fx = 'ts', grp = NULL) {
+
+  my_grp <- grp
+  my_code <- code
+
+  if(is.null( grp )){
+
+     my_split <- strsplit( code, "-" )[[ 1 ]]
+
+     if( length(my_split) >1 ){
+
+       my_code <- my_split[1]
+       my_grp <- my_split[2]
+
+     }
+  }
+
   if(fx == 'ts'){
     return(
-        onsR2::ts_read$new(code = code)$get_data(format = format)
+        onsR2::ts_read$new(code = my_code, grp = my_grp)$get_data(format = format)
     )
   }else{
     return(
-        onsR2::ds_read$new(code = code)$get_data(format = format)
+        onsR2::ds_read$new(my_code = code, gpp = my_grp)$get_data(format = format)
     )
 
   }

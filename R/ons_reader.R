@@ -7,6 +7,7 @@ ons_reader <- R6::R6Class(
 
        code = NULL,
        code_req = TRUE,
+       code_grp = NULL,
        title = NULL, # ons title for timeseries
        DO_NOTHING = 0,
        proceed = 1
@@ -24,11 +25,12 @@ ons_reader <- R6::R6Class(
       #'Constructor for the onsR6 class. Accepts 4-letter \code{code} argument and setup parameters for
       #'dowloading the data.
       #'
-      ,initialize = function(code,code_req = TRUE){
+      ,initialize = function(code,code_req = TRUE, grp = NULL){
 
         #fxn_show_boat(msg = match.call()[[1]])
         self$set_code(code_req)
         self$set_code(code)
+        self$set_grp(grp)
 
         if(self$code_req ){
 
@@ -61,11 +63,22 @@ ons_reader <- R6::R6Class(
         }
         invisible(self)
       }
+      ,set_grp = function(value){
 
+        #fxn_show_boat(msg = match.call()[[1]])
+        if (!missing(value) && !is.null(value)) {
+          self$code_grp <- toupper(trimws(value))
+
+        }
+        invisible(self)
+      }
       ,get_code = function(){
         return(self$code)
       }
 
+      ,get_grp = function(){
+        return(self$code_grp)
+      }
       ,get_title = function(){
 
         #fxn_show_boat(msg = match.call()[[1]])

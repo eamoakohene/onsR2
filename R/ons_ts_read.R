@@ -6,9 +6,9 @@ ts_read <- R6::R6Class(
      BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
-    ,initialize = function(code=NULL,code_req=TRUE){
+    ,initialize = function(code=NULL,code_req=TRUE, grp=NULL){
       #fxn_show_boat(msg = match.call()[[1]])
-      super$initialize(code,code_req)
+      super$initialize(code,code_req, grp)
 
       if(code_req){
         self$set_title()
@@ -41,7 +41,15 @@ ts_read <- R6::R6Class(
 
     ,get_info = function(){
       #fxn_show_boat(msg = match.call()[[1]])
-      my_data <- private$run_sql(sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code)))
+
+      my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code))
+
+      if( !is.null( self$code_grp ) ){
+
+        my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s' and upper(grp) =='%s' ",toupper(self$code), toupper(self$code_grp) )
+
+      }
+      my_data <- private$run_sql(my_sql )
 
       if(nrow(my_data) == 1 ){
         return(my_data)
