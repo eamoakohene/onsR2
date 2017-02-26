@@ -7,6 +7,7 @@ ts_read <- R6::R6Class(
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
 
     ,initialize = function(code=NULL,code_req=TRUE, grp=NULL){
+
       #fxn_show_boat(msg = match.call()[[1]])
       super$initialize(code,code_req, grp)
 
@@ -18,7 +19,9 @@ ts_read <- R6::R6Class(
 
 
     ,set_title = function(){
+
       #fxn_show_boat(msg = match.call()[[1]])
+
       if(self$proceed == self$DO_NOTHING){return('title could not be set')} #code not supplied
       my_sql <-  sprintf("select title from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
       my_data <- private$run_sql(my_sql)
@@ -40,7 +43,6 @@ ts_read <- R6::R6Class(
     }
 
     ,get_info = function(){
-      #fxn_show_boat(msg = match.call()[[1]])
 
       my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s'",toupper(self$code))
 
@@ -49,20 +51,23 @@ ts_read <- R6::R6Class(
         my_sql <- sprintf("select * from ons_ds_headers where upper(code)='%s' and upper(grp) =='%s' ",toupper(self$code), toupper(self$code_grp) )
 
       }
+
       my_data <- private$run_sql(my_sql )
 
       if(nrow(my_data) == 1 ){
+
         return(my_data)
+
       }
 
       has_default <- dplyr::filter(my_data,code_default == 1)
+
       if(nrow(has_default) > 0){
+
         return( has_default[1,])
+
       }
 
-
-      # my_sql <-  sprintf("select * from ons_ds_headers where upper(code)='%s' limit 1",toupper(self$code))
-      # my_data <- private$run_sql(my_sql)
 
       return(my_data[1,])
     }
@@ -87,12 +92,9 @@ ts_read <- R6::R6Class(
         },
         error = function(cond) {
           message(paste("URL does not seem to exist:", my_url))
-          #message(cond)
           return(NULL)
         },
         warning = function(cond) {
-          #message(paste("URL caused a warning:", my_url))
-          #message(cond)
           return(NULL)
         },
         finally = {
@@ -104,6 +106,7 @@ ts_read <- R6::R6Class(
 
     ,read_url_simple = function(my_url) {
       cat('Initiating ',self$code,"...\n")
+
       out <- try(
           read.csv( my_url, header=F,  skip= self$ROWS_TO_SKIP, stringsAsFactors=F)
         ,silent = T)
@@ -112,21 +115,11 @@ ts_read <- R6::R6Class(
     }
 
     ,read_data = function(){
-      #fxn_show_boat(msg = match.call()[[1]])
+
       if(self$proceed == self$DO_NOTHING){return(NULL)}
 
-#       temp <- self$get_info()
-#       if ( is.null(temp) ) {
-#         cat("Info returned nothing. Exiting function with NULL results.....\n")
-#         return(NULL)
-#       }
-
-      url <- self$get_url(T)
-      #cat(url,"\n")
-      #err <- simpleError("Error encountered during download!")
-
-
-      my_data <- self$read_url_simple(url)
+      url <- self$get_url( T )
+      my_data <- self$read_url_simple( url )
 
       if (is.null(my_data)) {
 
@@ -137,25 +130,15 @@ ts_read <- R6::R6Class(
                 return("Error encountered during download!")
         }
 
-        # if(nrow(my_data2) == 0){
-        #   cat("No data found for ",self$code,'\n')
-        #   return(NULL)
-        # }
-
         return(my_data2)
       }
 
-      # if(nrow(my_data) == 0){
-      #   cat("No data found for ",self$code,'\n')
-      #   return(NULL)
-      # }
       return(my_data)
     }
 
 
-    ,search_info = function(qry=NULL,is_code = FALSE) {
+    ,search_info = function(qry=NULL,is_code = FALSE, all_fields = F) {
 
-      #fxn_show_boat(msg = match.call()[[1]])
 
       my_is_code <- is_code
       my_qry <- qry
@@ -165,21 +148,35 @@ ts_read <- R6::R6Class(
         return(NULL)
       }
 
-      #fxn_show_boat('GONE PAST IS.NULL(QRY)')
 
       my_sql <- NULL
       if (!my_is_code) {
-        my_sql <- paste0(
-          "select code, title as description, url ",
-          "from ons_ds_headers where title like '%",my_qry,"%';"
-        )
+
+        if(all_fields){
+          my_sql <- paste0("select * from ons_ds_headers where title like '%",qtr,"%';")
+        }else{
+          my_sql <- paste0(
+            "select code, title as description, url ",
+            "from ons_ds_headers where title like '%",my_qry,"%';"
+          )
+        }
       }else{
-        my_sql <- paste0(
-          "select code, title as description, url ",
-          "from ons_ds_headers where code like '%",my_qry,"%';"
-        )
+
+        if(all_fields){
+
+          my_sql <- paste0(
+            "select * from ons_ds_headers where code like '%",my_qry,"%';"
+          )
+
+        }else{
+
+          my_sql <- paste0(
+            "select code, title as description, url ",
+            "from ons_ds_headers where code like '%",my_qry,"%';"
+          )
+        }
+
       }
-      #fxn_show_boat(my_sql)
 
       return(private$run_sql(my_sql))
     }#search

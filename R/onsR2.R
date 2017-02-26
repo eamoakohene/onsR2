@@ -23,30 +23,26 @@ download <- function(code,format = 'ts',fx = 'ts', grp = NULL) {
 
   if(fx == 'ts'){
     return(
-        onsR2::ts_read$new(code = my_code, grp = my_grp)$get_data(format = format)
+        onsR2::ts_read$new( code = my_code, grp = my_grp)$get_data(format = format)
     )
   }else{
     return(
-        onsR2::ds_read$new(my_code = code, gpp = my_grp)$get_data(format = format)
+        onsR2::ds_read$new( code = my_code, grp = my_grp)$get_data(format = format)
     )
 
   }
 }
 
 
-search <- function(qry = NULL,is_code = FALSE,fx = 'ts') {
-  #fxn_show_boat(msg = match.call()[[1]])
-  if(fx == 'ts'){
+search <- function(qry = NULL,is_code = FALSE, all_fields = F) {
+
+
      my_temp <- onsR2::ts_read$new( code_req = FALSE)
-     #fxn_show_boat('SEARCH |> MY_TEMP OK')
+
       return(
-        my_temp$search_info(qry = qry,is_code=is_code)
+        my_temp$search_info(qry = qry,is_code=is_code, all_fields = all_fields)
       )
-  }else{
-     return(
-        onsR2::ds_read$new(code_req = FALSE)$search_info(qry = qry,is_code=is_code)
-     )
-  }
+
 
 }
 
