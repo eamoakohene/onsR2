@@ -43,6 +43,7 @@ ons_meta <- R6::R6Class("ons_meta",
     #' data_type = whether link is for ONS timeseries or dataset
     #'
     initialize = function(pg,base_murl,pcss,skips,base_durl,data_type=1){
+
       self$set_page(pg)
       self$set_type(data_type)
       self$set_murl(base_murl)
@@ -53,12 +54,14 @@ ons_meta <- R6::R6Class("ons_meta",
     }
 
     ,set_page = function(value){
+
       if (!missing(value) && !is.null(value)) {
         self$pg <- value
         self$full_url <- self$build_url()
       }
 
       invisible(self)
+
     }
 
     ,build_url = function(){
