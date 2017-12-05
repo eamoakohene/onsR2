@@ -71,6 +71,47 @@ ons_ds_meta <- R6::R6Class(
              }
        }
     }
+    ,add_code = function( clist = list() ){
+
+      all_codes <- c(
+        'title',	'code',	'sadj',	'unit',	'notes',	'src',	'grp',	'url',	'uri_base',	'code_lwr',	'uri',	'code_grp'
+      )
+      req_codes <- c(
+        'code','title','unit','grp','url',	'uri_base','uri'
+      )
+
+      n_list <- length( clist )
+
+      req_ok <- sum( req_codes %in% names(clist) ) == length( req_codes )
+      fields_ok <- sum( names(clist) %in% all_codes) == n_list
+
+      if(n_list > 0 && req_ok && fields_ok ){
+
+        my_sql <- sprintf(" insert into ons_ds_headers( %s ) values %s ",
+                     paste(names( clist ),sep = "", collapse = ","),
+                     beamaUtils::split_str( paste( clist ,sep = "", collapse = ",") )
+              )
+
+        #DBI::dbSendQuery(private$get_db_con(), my_sql)
+        return(my_sql)
+
+      }
+
+      if(n_list == 0){
+        cat("Empty list\n")
+
+      }
+
+      if(!req_ok){
+        cat("List fields do meet REQUIRED fields criteria (code,title,unit,grp,url,uri_base,uri)\n")
+      }
+
+      if(!fields_ok){
+        cat("List contains unknown fields \n")
+      }
+
+
+    }
 
 
   )#public
