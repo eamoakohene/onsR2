@@ -92,7 +92,7 @@ ons_ds_meta <- R6::R6Class(
                      beamaUtils::split_str( paste( clist ,sep = "", collapse = ",") )
               )
 
-        #DBI::dbSendQuery(private$get_db_con(), my_sql)
+        DBI::dbSendQuery(private$get_db_con(), my_sql)
         return(my_sql)
 
       }
