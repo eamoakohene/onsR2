@@ -46,3 +46,9 @@ search <- function(qry = NULL,is_code = FALSE, all_fields = F) {
 
 }
 
+add <- function(fields = list() ){
+
+  my_temp <- onsR2::ons_ds_meta$new()
+  my_temp$add_code( clist = fields )
+
+}

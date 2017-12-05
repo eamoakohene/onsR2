@@ -12,27 +12,34 @@ ons_ds_meta <- R6::R6Class(
 
     ,get_headers = function(fn = NULL){
 
-      my_file <- fn
+      if( !is.null( fn) ){
 
-      my_data <- read.csv( my_file, header = F, stringsAsFactors = F)
+          my_file <- fn
 
-      my_cols <- dim(my_data)[2]
-      my_rows <- dim(my_data)[1]
+          my_data <- read.csv( my_file, header = F, stringsAsFactors = F)
 
-      if(my_rows > self$HEADER_LIMIT){
-        my_data <- my_data[c(1:self$HEADER_LIMIT),]
+          my_cols <- dim(my_data)[2]
+          my_rows <- dim(my_data)[1]
+
+          if(my_rows > self$HEADER_LIMIT){
+            my_data <- my_data[c(1:self$HEADER_LIMIT),]
+          }
+
+          return(my_data)
       }
 
-      return(my_data)
+      NULL
     }
 
     ,get_csv = function(){
+
        my_sql <- "select * from ons_datasets where url_csv is not null"
        my_data <- private$run_sql(my_sql)
        my_data$csv <- tolower(stringr::str_sub( my_data$url_csv, -3, -1))
 
        my_data <- dplyr::filter(my_data, csv=='csv')
        return(my_data)
+
     }
 
     ,add_headers = function(tbl_range=1:1000, col_range = 2:100000){
@@ -92,7 +99,7 @@ ons_ds_meta <- R6::R6Class(
                      beamaUtils::split_str( paste( clist ,sep = "", collapse = ",") )
               )
 
-        DBI::dbSendQuery(private$get_db_con(), my_sql)
+        DBI::dbSendQuery( private$get_db_con(), my_sql )
         return(my_sql)
 
       }
