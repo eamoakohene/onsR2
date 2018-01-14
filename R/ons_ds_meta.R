@@ -8,7 +8,11 @@ ons_ds_meta <- R6::R6Class(
 
     HEADER_LIMIT = 8,
 
-    initialize = function(){}
+    initialize = function(local = FALSE){
+
+      super$initialize( local = local)
+
+    }
 
     ,get_headers = function(fn = NULL){
 
@@ -94,10 +98,16 @@ ons_ds_meta <- R6::R6Class(
 
       if(n_list > 0 && req_ok && fields_ok ){
 
-        my_sql <- sprintf(" insert into ons_ds_headers( %s ) values %s ",
-                     paste(names( clist ),sep = "", collapse = ","),
-                     beamaUtils::split_str( paste( clist ,sep = "", collapse = ",") )
-              )
+        my_list <- clist
+        my_list$code <- toupper( my_list$code )
+        my_list$code_lwr <- tolower( my_list$code )
+        my_list$code_grp <- paste0(my_list$code, "-", my_list$grp)
+        my_names <- paste(names( my_list ),sep = "", collapse = ",")
+        my_values  <- paste(my_list, sep = "", collapse = ",")
+
+        my_sql <- sprintf(
+           "insert into ons_ds_headers( %s ) values %s ", my_names , beamaUtils::split_str( my_values )
+        )
 
         DBI::dbSendQuery( private$get_db_con(), my_sql )
         return(my_sql)

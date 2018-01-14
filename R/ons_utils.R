@@ -6,7 +6,23 @@ ons_utils <- R6::R6Class("ons_utils",
 
    public = list(
 
-      initialize = function(){}
+      initialize = function(local = FALSE){
+
+        self$set_local( local )
+
+      }
+
+      ,set_local = function( value){
+
+         if(!is.null(value) && is.logical( value )){
+           private$is_local <- value
+         }
+      }
+
+      ,run_qry = function(qry){
+        private$run_sql(qry)
+      }
+
 
    )#public
 
@@ -14,6 +30,7 @@ ons_utils <- R6::R6Class("ons_utils",
        is_local = FALSE,
 
        get_db_con = function(){
+
          if(private$is_local){
            return(
              DBI::dbConnect(RSQLite::SQLite(), dbname='R:/packages/onsR2/inst/extdata/onsR2.sqlite')
