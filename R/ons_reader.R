@@ -132,7 +132,7 @@ ons_reader <- R6::R6Class(
         mydata <- self$download_data()
 
         #*****
-        return(mydata)
+        #return(mydata)
         #*****
 
         if ( is.null( mydata) ) {
