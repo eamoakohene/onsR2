@@ -126,6 +126,8 @@ ts_read <- R6::R6Class(
         url2 <- self$get_url()
 
         my_data2 <- self$read_url_simple(url2)
+
+
         if (is.null(my_data2)) {
                 return("Error encountered during download!")
         }
