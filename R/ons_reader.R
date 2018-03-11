@@ -92,14 +92,18 @@ ons_reader <- R6::R6Class(
         if(self$proceed == self$DO_NOTHING){return(NULL)}
         my_data <- self$read_data()
 
+        #cat(class(my_data),"\n")
 
-        if(is.null(my_data)){ return(NULL) }
+        if(is.null(my_data) || !is.data.frame( my_data )){ return(NULL) }
         # if(!( regexpr("Error",my_data)[1] == 1 ) ){
         #   cat(self$code,":error encountered\n")
         #   return( NULL )
         # }
 
+
+
         names(my_data) <- c('date','value')
+
 
         my_data <- dplyr::filter(my_data,!is.na(value))
 
@@ -132,7 +136,7 @@ ons_reader <- R6::R6Class(
         mydata <- self$download_data()
 
         #*****
-        #return(mydata)
+        #cat('I am here\n')
         #*****
 
         if ( is.null( mydata) ) {
