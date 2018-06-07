@@ -4,9 +4,11 @@ ts_read <- R6::R6Class(
 
   public = list(
      BASEURL="http://www.ons.gov.uk/generator?format=csv&uri="
+    ,SBASEURL="https://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
+    ,https = FALSE
 
-    ,initialize = function(code=NULL,code_req=TRUE, grp=NULL){
+    ,initialize = function(code=NULL,code_req=TRUE, grp=NULL, https = FALSE){
 
       #fxn_show_boat(msg = match.call()[[1]])
       super$initialize(code,code_req, grp)
@@ -14,6 +16,7 @@ ts_read <- R6::R6Class(
       if(code_req){
         self$set_title()
       }
+      self$https <- https
 
     }
 
@@ -73,15 +76,39 @@ ts_read <- R6::R6Class(
     }
 
     ,get_url = function(is_new = FALSE){
+
       temp <- self$get_info()
       if ( is.null(temp) ) {
         cat("Info returned nothing. Exiting function with NULL results.....\n")
         return(NULL)
       }
-      if(!is_new){
-        return( tolower(sprintf("%s%s",self$BASEURL,temp$uri)) )
+
+
+      is_secured <- ( as.integer(temp$secure) == 1)
+      #cat('is_secured passed ', is_secured,'\n')
+
+      if( !(is_secured || self$https == T)){
+
+          if(!is_new){
+            return( tolower(sprintf("%s%s",self$SBASEURL,temp$uri)) )
+          }else{
+            return( tolower(sprintf("%s%s/%s",self$SBASEURL,temp$uri, temp$grp)) )
+          }
+
       }else{
-        return( tolower(sprintf("%s%s/%s",self$BASEURL,temp$uri, temp$grp)) )
+
+        #cat('has entered secure session ', is_secured,'\n')
+        the_url <- NULL
+
+        if(!is_new){
+          the_url <- tolower(sprintf("%s%s",self$SBASEURL,temp$uri))
+        }else{
+         the_url <-  tolower(sprintf("%s%s/%s",self$SBASEURL,temp$uri, temp$grp))
+        }
+
+        #cat('URL =  ', the_url,'\n')
+
+        return( the_url)
       }
 
     }
