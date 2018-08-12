@@ -77,6 +77,8 @@ ts_read <- R6::R6Class(
 
     ,get_url = function(is_new = FALSE){
 
+      is_new <- !is.null( self$code_grp )
+
       temp <- self$get_info()
       if ( is.null(temp) ) {
         cat("Info returned nothing. Exiting function with NULL results.....\n")
@@ -145,7 +147,7 @@ ts_read <- R6::R6Class(
 
       if(self$proceed == self$DO_NOTHING){return(NULL)}
 
-      url <- self$get_url( T )
+      url <- self$get_url( )
       my_data <- self$read_url_simple( url )
 
       if (is.null(my_data)) {
