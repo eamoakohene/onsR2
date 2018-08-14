@@ -7,6 +7,9 @@ ts_read <- R6::R6Class(
     ,SBASEURL="https://www.ons.gov.uk/generator?format=csv&uri="
     ,ROWS_TO_SKIP = 10 #rows to be skipped in the csv file
     ,https = FALSE
+    ,auto_grp = NULL
+    ,auto_url = NULL
+
 
     ,initialize = function(code=NULL,code_req=TRUE, grp=NULL, https = FALSE){
 
@@ -85,11 +88,14 @@ ts_read <- R6::R6Class(
         return(NULL)
       }
 
+      self$auto_grp <- temp$grp[1]
 
       is_secured <- ( as.integer(temp$secure) == 1)
       #cat('is_secured passed ', is_secured,'\n')
 
       if( !(is_secured || self$https == T)){
+
+        self$auto_url <- tolower(sprintf("%s%s/%s",self$BASEURL,temp$uri, self$auto_grp))
 
           if(!is_new){
             return( tolower(sprintf("%s%s",self$SBASEURL,temp$uri)) )
@@ -101,6 +107,8 @@ ts_read <- R6::R6Class(
 
         #cat('has entered secure session ', is_secured,'\n')
         the_url <- NULL
+
+        self$auto_url <- tolower(sprintf("%s%s/%s",self$SBASEURL,temp$uri, self$auto_grp))
 
         if(!is_new){
           the_url <- tolower(sprintf("%s%s",self$SBASEURL,temp$uri))
@@ -154,7 +162,7 @@ ts_read <- R6::R6Class(
 
         url2 <- self$get_url()
 
-        my_data2 <- self$read_url_simple(url2)
+        my_data2 <- self$read_url_simple( self$auto_url ) #url2
 
 
         if (is.null(my_data2)) {
