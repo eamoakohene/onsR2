@@ -122,6 +122,7 @@ ts_read <- R6::R6Class(
       }
 
     }
+
     ,read_url = function(my_url) {
       out <- tryCatch(
         {
@@ -175,7 +176,6 @@ ts_read <- R6::R6Class(
       return(my_data)
     }
 
-
     ,search_info = function(qry=NULL,is_code = FALSE, all_fields = F) {
 
 
@@ -222,6 +222,7 @@ ts_read <- R6::R6Class(
 
   )
 
-
+#/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/agpa/lms
+#/employmentandlabourmarket/peoplenotinwork/unemployment/
 
 ) #ons_ts_read
