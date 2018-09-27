@@ -21,6 +21,7 @@ download <- function(code,format = 'ts',fx = 'ts', grp = NULL) {
      }
   }
 
+
   if(fx == 'ts'){
     return(
         onsR2::ts_read$new( code = my_code, grp = my_grp)$get_data(format = format)

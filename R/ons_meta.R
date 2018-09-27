@@ -6,6 +6,7 @@
 #'
 #' The meta information are stored in 2 tables in sqlite database; ons_timeseries and ons_datasets.
 #' ons_timeseries = has 3 colums (code, caption, url)
+#'
 ons_meta <- R6::R6Class("ons_meta",
   inherit = ons_utils,
   public = list(
