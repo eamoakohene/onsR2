@@ -39,7 +39,7 @@ ds_read <- R6::R6Class(
 
       my_sql <- sprintf("select title from ons_ds_headers where upper(code)='%s'",toupper(self$code))
       my_data <- private$run_sql(my_sql)
-
+      cat(my_sql,"\n")
       if(nrow(my_data)>0) {
 
         self$title <- my_data$title[1]

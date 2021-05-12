@@ -37,7 +37,7 @@ ts_read <- R6::R6Class(
         self$title <- my_data$title[1]
 
       }else{
-
+        cat(my_sql,"\n")
         cat( paste0(self$code," code does not exist in database \n"))
         self$proceed <- self$DO_NOTHING
         return(NULL)
